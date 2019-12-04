@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -46,11 +46,11 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', 'db4free.net'),
+            'host' => env('DB_HOST', ''),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'pratica_2020'),
-            'username' => env('DB_USERNAME', 'juangabriel_95'),
-            'password' => env('DB_PASSWORD', 'Jngbrl2020'),
+            'database' => env('DB_DATABASE', ''),
+            'username' => env('DB_USERNAME', ''),
+            'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
@@ -65,12 +65,12 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
+            'url' => env('postgres://xynrgyslltecwe:61952bb698fba97a9513f95eb7f5d3e9770f18a203a77deb0ad48ac70a84e928@ec2-174-129-254-223.compute-1.amazonaws.com:5432/d5cifm7h4ferqk'),
+            'host' => env('DB_HOST', 'ec2-174-129-254-223.compute-1.amazonaws.com'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'database' => env('DB_DATABASE', 'd5cifm7h4ferqk'),
+            'username' => env('DB_USERNAME', 'xynrgyslltecwe'),
+            'password' => env('DB_PASSWORD', '61952bb698fba97a9513f95eb7f5d3e9770f18a203a77deb0ad48ac70a84e928'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,

@@ -63,7 +63,7 @@ class Handler extends ExceptionHandler
                 [
                     'errors' => [
                         'status' => 401,
-                        'message' => 'The route does not exist or you do not have permissions',
+                        'message' => 'Unauthenticated',
                     ]
                 ], 401
             );
