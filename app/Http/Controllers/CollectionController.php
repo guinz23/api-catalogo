@@ -3,83 +3,57 @@
 namespace App\Http\Controllers;
 
 use App\Collection;
+use App\Http\Controllers\BaseController as BaseController;
+use App\Http\Resources\Collection as CollectionResource;
+use App\Services\CollectionService;
 use Illuminate\Http\Request;
+use Validator;
 
-class CollectionController extends Controller
+class CollectionController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public $collectionService;
+
+    public function __construct(CollectionService $collectionService)
+    {
+        $this->collectionService = $collectionService;
+    }
     public function index()
     {
-        //
+        return $this->sendResponse(CollectionResource::collection($this->collectionService->getAll()), 'Colletions retrieved successfully.');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        if (Self::ValidateRequest($request)->fails()) {
+            return $this->sendError('Validation Error.', Self::ValidateRequest($request)->errors());
+        }
+        return $this->sendResponse(new CollectionResource($this->collectionService->create($request)), 'Colletions created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Collection  $collection
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Collection $collection)
+    public function show($id)
     {
-        //
+        if (is_null($this->collectionService->findById($id))) {
+            return $this->sendError('Product not found.');
+        }
+        return $this->sendResponse(new CollectionResource($this->collectionService->findById($id)), 'Colletions retrieved successfully.');
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Collection  $collection
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Collection $collection)
+    public function update(Request $request,$id)
     {
-        //
+        if (Self::ValidateRequest($request)->fails()) {
+            return $this->sendError('Validation Error.', Self::ValidateRequest($request)->errors());
+        }
+        return $this->sendResponse(new CollectionResource($this->collectionService->update($request,$id)), 'Colletions updated successfully.');
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Collection  $collection
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Collection $collection)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Collection  $collection
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Collection $collection)
     {
-        //
+        $this->collectionService->delete($collection);
+        return $this->sendResponse([], 'Colletions deleted successfully.');
+    }
+    private function ValidateRequest($request)
+    {
+        $validator = Validator::Make($request->all(), [
+            'name' => 'required',
+        ]);
+        return $validator;
     }
 }

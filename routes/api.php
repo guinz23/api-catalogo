@@ -14,5 +14,6 @@ Route::post('login', 'ResgisterController@login');
 
 //-----------------------------Routas que Necesitan Token---------------------------------------//
 Route::resource('article', 'ArticleController')->middleware('auth:api');
+Route::resource('collection','CollectionController')->middleware('auth:api');
 
 
