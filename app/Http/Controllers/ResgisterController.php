@@ -2,49 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController as BaseController;
-use App\User;
-use Illuminate\Support\Facades\Auth;
+use App\Services\AuthService;
+use Illuminate\Http\Request;
 use Validator;
-   
 
 class ResgisterController extends BaseController
 {
+    public $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'lastname' => 'required',
-            'rol' => 'required',
-            'phoneNumber'=>'required',
-            'state' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'c_password' => 'required|same:password',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+        if (Self::ValidateRequest($request)->fails()) {
+            return $this->sendError('Validation Error.', Self::ValidateRequest($request)->errors());
         }
-
         $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['data'] = $input;
-
+        $success['data'] = $this->authService->register($input);
         return $this->sendResponse($success, 'User register successfully.');
     }
+
     public function login(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::user();
-            $success['token'] = $user->createToken('MyApp')->accessToken;
-            $success['name'] = $user->name;
-
-            return $this->sendResponse($success, 'User login successfully.');
+        if ($this->authService->login($request) !== "") {
+            return $this->sendResponse($this->authService->login($request), 'User login successfully.');
         } else {
-            return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
+            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         }
+    }
+
+    private function ValidateRequest($request)
+    {
+        if($request->get("id")){
+            $validator = Validator::Make($request->all(), [
+                'name' => 'required',
+                'lastname' => 'required',
+                'rol' => 'required',
+                'phoneNumber' => 'required',
+                'state' => 'required',
+                'password' => 'required',
+                'c_password' => 'required|same:password',
+            ]);
+            return $validator;
+        }else{
+            $validator = Validator::Make($request->all(), [
+                'name' => 'required',
+                'lastname' => 'required',
+                'rol' => 'required',
+                'phoneNumber' => 'required',
+                'state' => 'required',
+                'email' => 'required|email|unique:users',
+                'password' => 'required'
+            ]);
+            return $validator;
+        }
+       
     }
 }

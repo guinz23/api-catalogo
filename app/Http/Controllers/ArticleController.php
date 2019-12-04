@@ -11,11 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         $articles = Article::all();
@@ -44,14 +40,17 @@ class ArticleController extends BaseController
     }
     public function show(Article $article)
     {
-        
+
     }
     public function update(Request $request, Article $article)
     {
-        //
+        
     }
     public function destroy(Article $article)
     {
-        //
+        
+    }
+    private function ValidateRequest(){
+
     }
 }
